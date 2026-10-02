@@ -1,0 +1,2 @@
+async function api(url, options={}){const res=await fetch(url,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options});let data=null;try{data=await res.json()}catch{}if(!res.ok)throw new Error(data?.error||"Something went wrong");return data}
+document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll("[data-year]").forEach(el=>el.textContent=new Date().getFullYear())});
