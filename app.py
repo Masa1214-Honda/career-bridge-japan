@@ -53,7 +53,8 @@ SCORE_WEIGHTS = {
 }
 STATUSES = {"new", "contacted", "interview", "shortlisted", "placed", "rejected", "on_hold"}
 PUBLIC_FIELDS = [
-    "full_name", "email", "phone", "nationality", "current_country", "residence_status",
+    "full_name", "email", "phone", "nationality", "current_country", "current_address",
+    "preferred_work_location", "residence_status",
     "work_permission", "desired_jobs", "job_intent", "japanese_level", "english_level",
     "other_languages", "years_experience", "skills", "start_timing", "cv_readiness",
     "interview_datetime", "timezone", "notes", "privacy_consent", "contact_consent",
@@ -105,6 +106,8 @@ def init_db():
                 phone TEXT,
                 nationality TEXT,
                 current_country TEXT,
+                current_address TEXT,
+                preferred_work_location TEXT,
                 residence_status TEXT,
                 work_permission TEXT,
                 desired_jobs TEXT,
@@ -123,6 +126,12 @@ def init_db():
                 contact_consent INTEGER NOT NULL
             )
         """)
+        existing_columns = {
+            row[1] for row in conn.execute("PRAGMA table_info(candidates)")
+        }
+        for column in ("current_address", "preferred_work_location"):
+            if column not in existing_columns:
+                conn.execute(f"ALTER TABLE candidates ADD COLUMN {column} TEXT")
 
 
 def score_candidate(data):
@@ -154,7 +163,8 @@ def normalize(data):
 
 def validate_candidate(data):
     required = [
-        "full_name", "email", "current_country", "residence_status", "work_permission",
+        "full_name", "email", "current_country", "current_address", "preferred_work_location",
+        "residence_status", "work_permission",
         "desired_jobs", "job_intent", "japanese_level", "english_level", "years_experience",
         "skills", "start_timing", "cv_readiness", "interview_datetime", "timezone",
     ]

@@ -28,6 +28,8 @@ class CareerBridgeTestCase(unittest.TestCase):
             "phone": "+81-00-0000-0000",
             "nationality": "Canada",
             "current_country": "Japan",
+            "current_address": "Shinjuku, Tokyo, Japan",
+            "preferred_work_location": "Tokyo or remote",
             "residence_status": "work_visa",
             "work_permission": "yes",
             "desired_jobs": "Software support",
@@ -72,6 +74,8 @@ class CareerBridgeTestCase(unittest.TestCase):
         candidates = listed.get_json()
         self.assertEqual(len(candidates), 1)
         self.assertEqual(candidates[0]["timezone"], "Asia/Tokyo (UTC+9)")
+        self.assertEqual(candidates[0]["current_address"], "Shinjuku, Tokyo, Japan")
+        self.assertEqual(candidates[0]["preferred_work_location"], "Tokyo or remote")
 
         changed = self.client.patch(
             f"/api/admin/candidates/{body['candidate_id']}", json={"status": "contacted"}

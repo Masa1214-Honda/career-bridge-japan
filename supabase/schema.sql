@@ -38,6 +38,8 @@ create table if not exists public.candidates (
   phone text,
   nationality text,
   current_country text not null check (btrim(current_country) <> ''),
+  current_address text,
+  preferred_work_location text,
 
   -- Step 2: work feasibility.
   residence_status text not null
@@ -76,6 +78,16 @@ create table if not exists public.candidates (
   privacy_consent boolean not null check (privacy_consent is true),
   contact_consent boolean not null default false
 );
+
+-- Idempotent additions for projects created before these location fields existed.
+alter table public.candidates
+  add column if not exists current_address text,
+  add column if not exists preferred_work_location text;
+
+comment on column public.candidates.current_address is
+  'Candidate-entered current city/region/address';
+comment on column public.candidates.preferred_work_location is
+  'Candidate-entered desired work location or remote preference';
 
 comment on table public.candidates is
   'Career Bridge Japan MVP v2 candidate applications and admin workflow';
